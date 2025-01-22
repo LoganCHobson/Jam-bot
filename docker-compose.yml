@@ -1,0 +1,10 @@
+version: '3.8'
+
+services:
+  jam-bot:
+    image: loganhobson/jam-bot:latest
+    container_name: jam-bot
+    environment:
+      - TOKEN=${TOKEN}
+    ports:
+      - "8080:8080"

@@ -1,0 +1,13 @@
+{
+    "roles": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "Programmer",
+        "Artist",
+        "Audio",
+        "Designer"
+    ],
+    "categories": [],
+    "archive_channel": "general"
+}
