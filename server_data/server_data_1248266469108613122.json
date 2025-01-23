@@ -1,5 +1,13 @@
 {
     "archive_channel_id": {
         "archive_channel_id": 1331781521916432444
+    },
+    "team1": {
+        "role_id": 1332096618480140409,
+        "category_id": 1332096620224974928,
+        "interaction_message": {
+            "message_id": 1332096635798556744,
+            "channel_id": 1248267081703489578
+        }
     }
 }

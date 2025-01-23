@@ -48,19 +48,22 @@ async def delete_team(ctx, *, team_name: str = ""):
 
 @bot.command()
 @commands.has_permissions(administrator=True)
-async def configure_archive_channel(ctx, *, channel: discord.TextChannel):
-   
+async def configure_archive_channel(ctx, *, channel: discord.TextChannel = None):
+    if channel is None:
+        await ctx.send("Please provide a team name.")
+        return
+    
     await configure_jam_archive(ctx, channel)
 
 
 @bot.command()
 @commands.has_permissions(administrator=True)
-async def archive_team(ctx, *, team_name: str = ""):
+async def archive_team(ctx,team_name: str = "", *, type=None):
     if team_name == "":
         await ctx.send("Please provide a team name.")
         return
     
-    await archive_jam_team(ctx, team_name)
+    await archive_jam_team(ctx, team_name, type)
 
 async def reconstruct_interactions():
     for guild in bot.guilds:

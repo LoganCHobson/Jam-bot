@@ -4,6 +4,7 @@ from save import load_server_data, save_server_data
 import json
 import os
 import random
+import re
 
 def get_channel_color(channel_name):
     colors = {
@@ -13,7 +14,18 @@ def get_channel_color(channel_name):
     }
     return colors.get(channel_name.lower(), discord.Color(random.randint(0, 0xFFFFFF)))
 
-async def archive_jam_team(ctx, team_name):
+def sanitize_personal_info(text):
+    text = re.sub(r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b', '[Personal Email]', text)
+    
+    text = re.sub(r'\b(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}\b', '[Personal Phone]', text)
+    
+    text = re.sub(r'\d+\s+[A-Za-z\s]+\s+\d{5}(\s+[A-Z]{2})?', '[Personal Location Information]', text)
+    
+    text = re.sub(r'\b[A-Z][a-z]+(\s+[A-Z]{2})?\s+\d{5}\b', '[Personal Location Information]', text)
+    
+    return text
+
+async def archive_jam_team(ctx, team_name, type=None):
     server_id = str(ctx.guild.id) 
     server_data_file_path = f"server_data/server_data_{server_id}.json"  
 
@@ -24,23 +36,29 @@ async def archive_jam_team(ctx, team_name):
     with open(server_data_file_path, 'r') as f:
         data = json.load(f)
     
-    if team_name not in data:
+    if team_name not in data and type is None:
         await ctx.send(f"Team '{team_name}' not found!")
         return
 
-    team_data = data[team_name]
+    team_data = data.get(team_name, {})
     archive_channel_id = data["archive_channel_id"]["archive_channel_id"]
     category_id = team_data.get("category_id")
 
-    if not archive_channel_id or not category_id:
-        await ctx.send(f"Archive or category information not found for team '{team_name}'!")
-        return
+    if type == "--any":
+        category = discord.utils.get(ctx.guild.categories, name=team_name)
+        if not category:
+            await ctx.send(f"Couldn't find a category named '{team_name}'.")
+            return
+    else:
+        if not category_id:
+            await ctx.send(f"Category information not found for team '{team_name}'!")
+            return
+        category = discord.utils.get(ctx.guild.categories, id=int(category_id))
 
-    category = discord.utils.get(ctx.guild.categories, id=int(category_id))
     archive_channel = discord.utils.get(ctx.guild.text_channels, id=int(archive_channel_id))
 
     if not category or not archive_channel:
-        await ctx.send(f"Couldn't find the category or archive channel for team '{team_name}'.")
+        await ctx.send(f"Couldn't find the category or archive channel.")
         return
 
     thread = await archive_channel.create_thread(name=f"{team_name} Archive", type=discord.ChannelType.public_thread)
@@ -56,9 +74,13 @@ async def archive_jam_team(ctx, team_name):
         label_embed.set_thumbnail(url=ctx.guild.icon.url if ctx.guild.icon else None)
         await thread.send(embed=label_embed)
 
-        async for message in channel.history(limit=100, oldest_first=True):
+        async for message in channel.history(oldest_first=True):
+            
+            
+            sanitized_content = sanitize_personal_info(message.content) 
+            
             embed = discord.Embed(
-                description=message.content if message.content else None,
+                description=sanitized_content if message.content else None,
                 color=channel_color,
                 timestamp=message.created_at
             )
