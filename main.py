@@ -16,6 +16,7 @@ TOKEN = os.getenv('TOKEN')
 bot = commands.Bot(command_prefix="!", intents=intents)
 
 @bot.command()
+@commands.has_permissions(administrator=True)
 async def create_team(ctx, *, team_name: str = ""):
 
     if team_name == "":
@@ -37,6 +38,7 @@ async def create_team(ctx, *, team_name: str = ""):
     await save_server_data(ctx.guild.id, team_name, message.id, message.channel.id, role.id, category.id)
 
 @bot.command()
+@commands.has_permissions(administrator=True)
 async def delete_team(ctx, *, team_name: str = ""):
     if team_name == "":
         await ctx.send("Please provide a team name.")
@@ -45,12 +47,14 @@ async def delete_team(ctx, *, team_name: str = ""):
     await delete_server_team(ctx, team_name)
 
 @bot.command()
+@commands.has_permissions(administrator=True)
 async def configure_archive_channel(ctx, *, channel: discord.TextChannel):
    
     await configure_jam_archive(ctx, channel)
 
 
 @bot.command()
+@commands.has_permissions(administrator=True)
 async def archive_team(ctx, *, team_name: str = ""):
     if team_name == "":
         await ctx.send("Please provide a team name.")
