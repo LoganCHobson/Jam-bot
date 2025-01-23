@@ -80,7 +80,3 @@ async def create_interaction_message(ctx, team_name: str):
 
     return message
 
-   
-    
-
-    

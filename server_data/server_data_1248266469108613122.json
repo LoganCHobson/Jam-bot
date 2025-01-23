@@ -1,26 +1,3 @@
 {
-    "team7": {
-        "role_id": 1331764632599400479,
-        "category_id": 1331764634314604735,
-        "interaction_message": {
-            "message_id": 1331764643894657034,
-            "channel_id": 1248267081703489578
-        }
-    },
-    "team8": {
-        "role_id": 1331765799647449119,
-        "category_id": 1331765801535148063,
-        "interaction_message": {
-            "message_id": 1331765810037002333,
-            "channel_id": 1248267081703489578
-        }
-    },
-    "team9": {
-        "role_id": 1331767958095134761,
-        "category_id": 1331767960335024160,
-        "interaction_message": {
-            "message_id": 1331767969944043580,
-            "channel_id": 1248267081703489578
-        }
-    }
+    
 }

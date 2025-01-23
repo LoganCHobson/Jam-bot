@@ -30,3 +30,16 @@ def load_server_data(guild_id: int):
             return json.load(f)
     except (FileNotFoundError, json.JSONDecodeError):
         return {}
+
+async def delete_server_data(guild_id, team_name):
+    # Load existing server data
+    server_data = load_server_data(guild_id)
+    
+    if team_name in server_data:
+        team_data = server_data.pop(team_name)  
+        role_id = team_data["role_id"]
+        category_id = team_data["category_id"]
+        message_id = team_data["interaction_message"]["message_id"]
+        channel_id = team_data["interaction_message"]["channel_id"]
+
+        await save_server_data(guild_id, team_name, message_id, channel_id, role_id, category_id)

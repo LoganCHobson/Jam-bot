@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 import os
 from createTeam import create_role, create_category, create_interaction_message, join_button_callback, leave_button_callback
+from deleteTeam import delete_server_team
 from save import save_server_data, load_server_data
 
 intents = discord.Intents.default()
@@ -33,6 +34,14 @@ async def create_team(ctx, *, team_name: str = ""):
     message = await create_interaction_message(ctx, team_name)
 
     await save_server_data(ctx.guild.id, team_name, message.id, message.channel.id, role.id, category.id)
+
+@bot.command()
+async def delete_team(ctx, *, team_name: str = ""):
+    if team_name == "":
+        await ctx.send("Please provide a team name.")
+        return
+    
+    await delete_server_team(ctx, team_name)
 
 async def reconstruct_interactions():
     for guild in bot.guilds:
